@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ShrutiCalc – Calculus Calculator</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="bg-glow" aria-hidden="true"></div>
+
+  <header class="container topbar">
+    <div class="brand">
+      <span class="logo" aria-hidden="true">∫</span>
+      <div>
+        <h1>ShrutiCalc</h1>
+        <p>Calculus Calculator</p>
+      </div>
+    </div>
+    <p class="tagline">Type a problem, press calculate, and see the formula, the answer and the graph.</p>
+  </header>
+
+  <nav class="container tabs" id="tabs" role="tablist" aria-label="Calculators">
+    <button class="tab active" role="tab" data-tab="arith"   aria-selected="true">Arithmetic</button>
+    <button class="tab"        role="tab" data-tab="entropy" aria-selected="false">Binary Entropy</button>
+    <button class="tab"        role="tab" data-tab="diff"    aria-selected="false">Differentiation</button>
+    <button class="tab"        role="tab" data-tab="integ"   aria-selected="false">Integration</button>
+    <button class="tab"        role="tab" data-tab="limit"   aria-selected="false">Limits</button>
+    <button class="tab"        role="tab" data-tab="graph"   aria-selected="false">Graphs</button>
+  </nav>
+
+  <main class="container">
+
+    <!-- ============ 1. ARITHMETIC ============ -->
+    <section class="panel active" id="arith">
+      <div class="grid">
+        <div class="card">
+          <h2>Basic Arithmetic</h2>
+          <p class="hint">Type an expression or use the keypad. You can use + − × ÷ ^ and brackets, plus sqrt() and abs().</p>
+
+          <label for="arith-input">Expression</label>
+          <input id="arith-input" type="text" value="(12 + 8) * 3 / 4" autocomplete="off" spellcheck="false" data-run="arith">
+
+          <div class="keypad" id="keypad"></div>
+
+          <div class="formula">
+            <strong>Order of operations (BODMAS)</strong>
+            Brackets, then powers, then × and ÷, then + and −.<br>
+            Example: 2 + 3 * 4 = 14, but (2 + 3) * 4 = 20.
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Result</h2>
+          <div class="result" id="arith-result">–</div>
+          <div class="detail" id="arith-detail"></div>
+          <h3>Recent calculations</h3>
+          <ul class="history" id="arith-history"></ul>
+          <p class="hint" id="arith-history-empty">Your calculations will appear here. Click one to use it again.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 2. BINARY ENTROPY ============ -->
+    <section class="panel" id="entropy">
+      <div class="grid">
+        <div class="card">
+          <h2>Binary Entropy</h2>
+          <p class="hint">Entropy measures how unpredictable a yes/no event is. Enter the probability p of one outcome (0 to 1). Fractions like 1/3 work too.</p>
+
+          <label for="ent-p">Probability p</label>
+          <input id="ent-p" type="text" value="0.3" autocomplete="off" spellcheck="false" data-run="entropy">
+
+          <div class="chips">
+            <button class="chip" data-set='{"ent-p":"0.5"}'>0.5</button>
+            <button class="chip" data-set='{"ent-p":"0.1"}'>0.1</button>
+            <button class="chip" data-set='{"ent-p":"0.9"}'>0.9</button>
+            <button class="chip" data-set='{"ent-p":"1/3"}'>1/3</button>
+          </div>
+
+          <button class="btn" data-run="entropy">Calculate entropy</button>
+
+          <div class="formula">
+            <strong>Formula</strong>
+            H(p) = −p · log₂(p) − (1 − p) · log₂(1 − p)<br>
+            The answer is in bits. H(0) = H(1) = 0, and the maximum is H(0.5) = 1 bit.
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Result</h2>
+          <div class="result" id="ent-result">–</div>
+          <div class="detail" id="ent-steps"></div>
+          <canvas class="graph" id="ent-canvas"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 3. DIFFERENTIATION ============ -->
+    <section class="panel" id="diff">
+      <div class="grid">
+        <div class="card">
+          <h2>Differentiation</h2>
+          <p class="hint">Find the derivative of f(x). Write powers as x^2, products as 3x or 3*x, and use sin(x), cos(x), tan(x), e^x, ln(x), sqrt(x).</p>
+
+          <label for="diff-input">f(x) =</label>
+          <input id="diff-input" type="text" value="x^3 + 2x^2 - 5x + 1" autocomplete="off" spellcheck="false" data-run="diff">
+
+          <div class="row2">
+            <div>
+              <label for="diff-order">Derivative</label>
+              <select id="diff-order" data-run="diff">
+                <option value="1">First, f′(x)</option>
+                <option value="2">Second, f″(x)</option>
+              </select>
+            </div>
+            <div>
+              <label for="diff-x0">Evaluate at x =</label>
+              <input id="diff-x0" type="text" value="1" autocomplete="off" spellcheck="false" data-run="diff">
+            </div>
+          </div>
+
+          <div class="chips">
+            <button class="chip" data-set='{"diff-input":"x^2"}'>x^2</button>
+            <button class="chip" data-set='{"diff-input":"sin(x)"}'>sin(x)</button>
+            <button class="chip" data-set='{"diff-input":"x^2*sin(x)"}'>x^2*sin(x)</button>
+            <button class="chip" data-set='{"diff-input":"e^x/x"}'>e^x/x</button>
+            <button class="chip" data-set='{"diff-input":"ln(x)"}'>ln(x)</button>
+            <button class="chip" data-set='{"diff-input":"sin(x^2)"}'>sin(x^2)</button>
+          </div>
+
+          <button class="btn" data-run="diff">Differentiate</button>
+
+          <div class="formula">
+            <strong>Rules used</strong>
+            Power: d/dx xⁿ = n·xⁿ⁻¹<br>
+            Product: (u·v)′ = u′v + uv′<br>
+            Quotient: (u/v)′ = (u′v − uv′) / v²<br>
+            Chain: d/dx f(g(x)) = f′(g(x)) · g′(x)<br>
+            sin x → cos x, cos x → −sin x, eˣ → eˣ, ln x → 1/x
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Result</h2>
+          <div class="result" id="diff-result">–</div>
+          <div class="detail" id="diff-info"></div>
+          <canvas class="graph" id="diff-canvas"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 4. INTEGRATION ============ -->
+    <section class="panel" id="integ">
+      <div class="grid">
+        <div class="card">
+          <h2>Integration</h2>
+          <p class="hint">Find the area under f(x) between two x values. The calculator also tries to find the antiderivative F(x).</p>
+
+          <label for="int-input">f(x) =</label>
+          <input id="int-input" type="text" value="x^2" autocomplete="off" spellcheck="false" data-run="integ">
+
+          <div class="row2">
+            <div>
+              <label for="int-a">Lower limit a</label>
+              <input id="int-a" type="text" value="0" autocomplete="off" spellcheck="false" data-run="integ">
+            </div>
+            <div>
+              <label for="int-b">Upper limit b</label>
+              <input id="int-b" type="text" value="3" autocomplete="off" spellcheck="false" data-run="integ">
+            </div>
+          </div>
+
+          <div class="chips">
+            <button class="chip" data-set='{"int-input":"x^2","int-a":"0","int-b":"3"}'>x^2 from 0 to 3</button>
+            <button class="chip" data-set='{"int-input":"3x^2 + 2x","int-a":"1","int-b":"2"}'>3x^2 + 2x</button>
+            <button class="chip" data-set='{"int-input":"sin(x)","int-a":"0","int-b":"pi"}'>sin(x) from 0 to pi</button>
+            <button class="chip" data-set='{"int-input":"e^x","int-a":"0","int-b":"1"}'>e^x</button>
+            <button class="chip" data-set='{"int-input":"1/x","int-a":"1","int-b":"e"}'>1/x</button>
+          </div>
+
+          <button class="btn" data-run="integ">Integrate</button>
+
+          <div class="formula">
+            <strong>Formulas</strong>
+            ∫ xⁿ dx = xⁿ⁺¹ / (n + 1) + C (n ≠ −1)<br>
+            ∫ 1/x dx = ln|x| + C<br>
+            ∫ sin x dx = −cos x + C, ∫ cos x dx = sin x + C, ∫ eˣ dx = eˣ + C<br>
+            Definite integral: ∫ₐᵇ f(x) dx = F(b) − F(a)<br>
+            Simpson's rule (used for the number): ∫ ≈ (h/3) [f₀ + 4f₁ + 2f₂ + … + fₙ]
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Result</h2>
+          <div class="result" id="int-result">–</div>
+          <div class="detail" id="int-info"></div>
+          <canvas class="graph" id="int-canvas"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 5. LIMITS ============ -->
+    <section class="panel" id="limit">
+      <div class="grid">
+        <div class="card">
+          <h2>Limits</h2>
+          <p class="hint">See what f(x) gets close to as x approaches a value. Type inf for infinity.</p>
+
+          <label for="lim-input">f(x) =</label>
+          <input id="lim-input" type="text" value="sin(x)/x" autocomplete="off" spellcheck="false" data-run="limit">
+
+          <div class="row2">
+            <div>
+              <label for="lim-a">x approaches</label>
+              <input id="lim-a" type="text" value="0" autocomplete="off" spellcheck="false" data-run="limit">
+            </div>
+            <div>
+              <label for="lim-dir">From</label>
+              <select id="lim-dir" data-run="limit">
+                <option value="both">Both sides</option>
+                <option value="left">Left side only</option>
+                <option value="right">Right side only</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="chips">
+            <button class="chip" data-set='{"lim-input":"sin(x)/x","lim-a":"0","lim-dir":"both"}'>sin(x)/x at 0</button>
+            <button class="chip" data-set='{"lim-input":"(x^2-1)/(x-1)","lim-a":"1","lim-dir":"both"}'>(x^2-1)/(x-1) at 1</button>
+            <button class="chip" data-set='{"lim-input":"1/x","lim-a":"0","lim-dir":"both"}'>1/x at 0</button>
+            <button class="chip" data-set='{"lim-input":"abs(x)/x","lim-a":"0","lim-dir":"both"}'>abs(x)/x at 0</button>
+            <button class="chip" data-set='{"lim-input":"(1+1/x)^x","lim-a":"inf","lim-dir":"both"}'>(1+1/x)^x at inf</button>
+            <button class="chip" data-set='{"lim-input":"(2x+1)/(x-3)","lim-a":"inf","lim-dir":"both"}'>(2x+1)/(x-3) at inf</button>
+          </div>
+
+          <button class="btn" data-run="limit">Find limit</button>
+
+          <div class="formula">
+            <strong>Idea</strong>
+            lim x→a f(x) = L means f(x) gets closer and closer to L as x gets closer to a.<br>
+            A two-sided limit exists only when the left-hand and right-hand limits agree.<br>
+            The calculator tries x = a ± 0.1, 0.01, 0.001, … and checks where the values settle.
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Result</h2>
+          <div class="result" id="lim-result">–</div>
+          <div class="detail" id="lim-info"></div>
+          <div class="table-wrap" id="lim-table"></div>
+          <canvas class="graph" id="lim-canvas"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 6. GRAPHS ============ -->
+    <section class="panel" id="graph">
+      <div class="grid">
+        <div class="card">
+          <h2>Function Graphs</h2>
+          <p class="hint">Pick a function, change its numbers and watch the graph update.</p>
+
+          <label for="g-type">Function</label>
+          <select id="g-type">
+            <option value="sin">Sine: A·sin(Bx + C) + D</option>
+            <option value="cos">Cosine: A·cos(Bx + C) + D</option>
+            <option value="poly">Polynomial: ax³ + bx² + cx + d</option>
+          </select>
+
+          <div class="row4" id="g-trig">
+            <div><label for="g-A">A</label><input id="g-A" type="text" value="1" autocomplete="off"></div>
+            <div><label for="g-B">B</label><input id="g-B" type="text" value="1" autocomplete="off"></div>
+            <div><label for="g-C">C</label><input id="g-C" type="text" value="0" autocomplete="off"></div>
+            <div><label for="g-D">D</label><input id="g-D" type="text" value="0" autocomplete="off"></div>
+          </div>
+
+          <div class="row4 hidden" id="g-poly">
+            <div><label for="g-pa">a (x³)</label><input id="g-pa" type="text" value="1" autocomplete="off"></div>
+            <div><label for="g-pb">b (x²)</label><input id="g-pb" type="text" value="0" autocomplete="off"></div>
+            <div><label for="g-pc">c (x)</label><input id="g-pc" type="text" value="-3" autocomplete="off"></div>
+            <div><label for="g-pd">d</label><input id="g-pd" type="text" value="0" autocomplete="off"></div>
+          </div>
+
+          <div class="row2">
+            <div><label for="g-xmin">x from</label><input id="g-xmin" type="text" value="-2pi" autocomplete="off"></div>
+            <div><label for="g-xmax">x to</label><input id="g-xmax" type="text" value="2pi" autocomplete="off"></div>
+          </div>
+
+          <div class="chips">
+            <button class="chip" data-set='{"g-type":"sin","g-A":"1","g-B":"1","g-C":"0","g-D":"0"}'>sin(x)</button>
+            <button class="chip" data-set='{"g-type":"cos","g-A":"1","g-B":"1","g-C":"0","g-D":"0"}'>cos(x)</button>
+            <button class="chip" data-set='{"g-type":"sin","g-A":"2","g-B":"3","g-C":"0","g-D":"1"}'>2 sin(3x) + 1</button>
+            <button class="chip" data-set='{"g-type":"poly","g-pa":"0","g-pb":"1","g-pc":"0","g-pd":"-4"}'>x^2 - 4</button>
+            <button class="chip" data-set='{"g-type":"poly","g-pa":"1","g-pb":"0","g-pc":"-3","g-pd":"0"}'>x^3 - 3x</button>
+          </div>
+
+          <button class="btn" data-run="graph">Plot graph</button>
+
+          <div class="formula">
+            <strong>Formulas</strong>
+            y = A·sin(Bx + C) + D: amplitude |A|, period 2π / |B|, shifted by −C/B, midline y = D<br>
+            y = ax³ + bx² + cx + d: the x-intercepts are the solutions of y = 0
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Result</h2>
+          <div class="result" id="g-result">–</div>
+          <canvas class="graph tall" id="g-canvas"></canvas>
+          <div class="detail" id="g-info"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="container footer">
+    ShrutiCalc is built with plain HTML, CSS and JavaScript. It works offline and needs no installation.
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
